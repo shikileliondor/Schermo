@@ -23,6 +23,8 @@ class User extends Authenticatable
         'email',
         'password',
         'school_id',
+        'is_super_admin',
+        'is_active',
     ];
 
     /**
@@ -45,11 +47,18 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_super_admin' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return (bool) $this->is_super_admin;
     }
 }
