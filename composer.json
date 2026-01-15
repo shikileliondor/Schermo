@@ -12,6 +12,7 @@
         "laravel/tinker": "^2.10.1",
         "maatwebsite/excel": "^3.1",
         "spatie/laravel-permission": "^6.24",
+        "stancl/tenancy": "^3.8",
         "twilio/sdk": "^8.10"
     },
     "require-dev": {
