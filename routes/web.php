@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\SchoolController;
 use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
 
+Route::view('/login', 'auth.login')->name('login');
+
 Route::get('/', function () {
     return redirect()->route('admin.dashboard');
 });
