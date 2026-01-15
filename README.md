@@ -7,6 +7,67 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Multi-tenant (écoles)
+
+### Objectif
+
+Ce projet est configuré pour un multi-tenant simple avec une base centrale et une base MySQL par école, via `stancl/tenancy`.
+
+### Bases de données
+
+- **Base centrale** : utilisateurs, écoles (tenants), paramètres de plateforme.
+- **Base par école** : élèves, paiements, matières, emplois du temps, etc.
+
+### Configuration `.env`
+
+```ini
+DB_CONNECTION=central
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=schermo_central
+DB_USERNAME=root
+DB_PASSWORD=
+
+TENANT_DB_HOST=127.0.0.1
+TENANT_DB_PORT=3306
+TENANT_DB_USERNAME=root
+TENANT_DB_PASSWORD=
+```
+
+### Exemple de création d’une école (tenant)
+
+```php
+use App\Models\School;
+use App\Models\User;
+
+$school = School::create([
+    'id' => 'school_001',
+    'name' => 'École Horizon',
+    'database' => 'schermo_school_001',
+]);
+
+$school->createDatabase();
+
+$admin = User::first();
+$admin->school_id = $school->id;
+$admin->save();
+```
+
+### Migrations et seeders par tenant
+
+```bash
+# Crée la base et lance les migrations de l’école ciblée
+php artisan tenants:migrate --tenants=school_001
+
+# Exécute le seeder par tenant
+php artisan tenants:seed --tenants=school_001
+```
+
+### Fonctionnement
+
+Quand un utilisateur est connecté, le middleware initialise automatiquement la connexion tenant via `school_id`.
+Toutes les requêtes Eloquent s’exécutent alors sur la base de l’école active.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
