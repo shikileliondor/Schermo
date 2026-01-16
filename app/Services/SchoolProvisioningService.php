@@ -27,17 +27,16 @@ class SchoolProvisioningService
             $coreDb->beginTransaction();
 
             $databaseName = $this->generateSchoolDatabaseName($coreDb, $schoolDatabasePrefix);
-            $tenantId = (string) Str::uuid();
+            $status = $data['status'] === 'active';
 
             $school = new School([
-                'id' => $tenantId,
                 'name' => $data['name'],
                 'database' => $databaseName,
+                'status' => $status,
                 'data' => [
                     'code' => $data['code'],
                     'email' => $data['email'],
                     'phone' => $data['phone'],
-                    'status' => $data['status'],
                     'db_created' => false,
                 ],
             ]);

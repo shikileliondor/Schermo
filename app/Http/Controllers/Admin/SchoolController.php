@@ -24,7 +24,12 @@ class SchoolController extends Controller
                 });
             })
             ->when($request->filled('status'), function ($query) use ($request) {
-                $query->where('data->status', $request->string('status')->toString());
+                $status = $request->string('status')->toString();
+                if ($status === 'active') {
+                    $query->where('status', true);
+                } elseif ($status === 'suspended') {
+                    $query->where('status', false);
+                }
             })
             ->latest()
             ->paginate(10)
@@ -82,15 +87,12 @@ class SchoolController extends Controller
 
     public function toggleStatus(School $school): RedirectResponse
     {
-        $data = $school->data ?? [];
-        $current = $data['status'] ?? 'suspended';
-        $data['status'] = $current === 'active' ? 'suspended' : 'active';
-        $school->data = $data;
+        $school->status = ! $school->status;
         $school->save();
 
         Log::info('School status toggled', [
             'school_id' => $school->id,
-            'status' => $data['status'],
+            'status' => $school->status ? 'active' : 'suspended',
             'action' => 'toggle_status',
         ]);
 
