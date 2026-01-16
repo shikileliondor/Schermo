@@ -60,7 +60,9 @@ class SchoolProvisioningService
 
             return $school;
         } catch (Throwable $exception) {
-            $coreDb->rollBack();
+            if ($coreDb->transactionLevel() > 0) {
+                $coreDb->rollBack();
+            }
 
             if ($databaseCreated && $databaseName) {
                 $this->dropDatabase($coreDb, $databaseName);
