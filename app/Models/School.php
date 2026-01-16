@@ -19,6 +19,7 @@ class School extends Tenant
     protected $keyType = 'string';
 
     public static $customColumns = [
+        'id',
         'name',
         'database',
         'status',
@@ -27,6 +28,7 @@ class School extends Tenant
     public static function getCustomColumns(): array
     {
         return [
+            'id',
             'name',
             'database',
             'status',
