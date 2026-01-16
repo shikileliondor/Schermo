@@ -14,8 +14,8 @@ class DashboardController extends Controller
 
         $stats = [
             'total' => School::count(),
-            'active' => School::where('data->status', 'active')->count(),
-            'suspended' => School::where('data->status', 'suspended')->count(),
+            'active' => School::where('status', true)->count(),
+            'suspended' => School::where('status', false)->count(),
             'latest_created_at' => $latestCreatedAt ? Carbon::parse($latestCreatedAt)->format('d/m/Y H:i') : null,
         ];
 
