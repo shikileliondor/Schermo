@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Stancl\Tenancy\Database\Models\Tenant;
+use Throwable;
 
 class School extends Tenant
 {
@@ -68,6 +70,30 @@ class School extends Tenant
 
     public function databaseCreated(): bool
     {
-        return (bool) ($this->data['db_created'] ?? false);
+        if ((bool) ($this->data['db_created'] ?? false)) {
+            return true;
+        }
+
+        if (! $this->database) {
+            return false;
+        }
+
+        return $this->databaseExists();
+    }
+
+    private function databaseExists(): bool
+    {
+        $connection = config('schermo.core_connection') ?: config('database.default');
+
+        try {
+            $result = DB::connection($connection)->selectOne(
+                'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?',
+                [$this->database]
+            );
+
+            return $result !== null;
+        } catch (Throwable) {
+            return false;
+        }
     }
 }
