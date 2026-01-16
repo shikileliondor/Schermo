@@ -14,7 +14,10 @@ class SchoolProvisioningService
     public function createSchool(array $data): School
     {
         $coreConnection = config('schermo.core_connection') ?: config('database.default');
-        $schoolDatabasePrefix = config('schermo.school_database_prefix', 'school_');
+        $schoolDatabasePrefix = config('schermo.school_database_prefix');
+        if (! is_string($schoolDatabasePrefix) || $schoolDatabasePrefix === '') {
+            $schoolDatabasePrefix = 'school_';
+        }
 
         $coreDb = DB::connection($coreConnection);
         $databaseCreated = false;
