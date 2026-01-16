@@ -17,6 +17,14 @@ class School extends Tenant
         'database',
     ];
 
+    public static function getCustomColumns(): array
+    {
+        return [
+            'name',
+            'database',
+        ];
+    }
+
     protected $fillable = [
         'id',
         'name',
