@@ -12,6 +12,11 @@ class School extends Tenant
 
     protected $table = 'schools';
 
+    public static $customColumns = [
+        'name',
+        'database',
+    ];
+
     protected $fillable = [
         'id',
         'name',
