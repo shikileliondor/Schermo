@@ -5,6 +5,16 @@ use App\Http\Controllers\Admin\SchoolAdminController;
 use App\Http\Controllers\Admin\SchoolController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Erp\DashboardController as ErpDashboardController;
+use App\Http\Controllers\Erp\DocumentController;
+use App\Http\Controllers\Erp\GradeController;
+use App\Http\Controllers\Erp\MessageController;
+use App\Http\Controllers\Erp\PaymentController;
+use App\Http\Controllers\Erp\ReportController;
+use App\Http\Controllers\Erp\SchoolClassController;
+use App\Http\Controllers\Erp\StaffController;
+use App\Http\Controllers\Erp\StudentController;
+use App\Http\Controllers\Erp\SubjectController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +40,26 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::middleware(['auth', 'verified'])
+    ->prefix('erp')
+    ->name('erp.')
+    ->group(function () {
+        Route::get('/dashboard', [ErpDashboardController::class, 'index'])->name('dashboard');
+        Route::resource('classes', SchoolClassController::class)->except(['show']);
+        Route::resource('students', StudentController::class)->except(['show']);
+        Route::resource('staff', StaffController::class)->except(['show']);
+        Route::resource('subjects', SubjectController::class)->except(['show']);
+        Route::resource('grades', GradeController::class)->except(['show']);
+        Route::resource('payments', PaymentController::class)->except(['show']);
+        Route::resource('documents', DocumentController::class)->except(['show']);
+        Route::resource('messages', MessageController::class)->except(['show']);
+
+        Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+        Route::get('staff/{staff}/contract', [StaffController::class, 'downloadContract'])->name('staff.contract');
+        Route::get('students/{student}/bulletin', [ReportController::class, 'bulletin'])->name('students.bulletin');
+        Route::get('payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
+    });
 
 Route::middleware(['auth', 'super-admin'])
     ->prefix('admin')
