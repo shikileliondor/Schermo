@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\DB;
-use Stancl\Tenancy\Database\Models\Tenant;
-use Throwable;
 
-class School extends Tenant
+class School extends Model
 {
     use HasUuids;
     use SoftDeletes;
@@ -20,26 +18,8 @@ class School extends Tenant
 
     protected $keyType = 'string';
 
-    public static $customColumns = [
-        'id',
-        'name',
-        'database',
-        'status',
-    ];
-
-    public static function getCustomColumns(): array
-    {
-        return [
-            'id',
-            'name',
-            'database',
-            'status',
-        ];
-    }
-
     protected $fillable = [
         'name',
-        'database',
         'data',
         'status',
     ];
@@ -66,34 +46,5 @@ class School extends Tenant
     public function isActive(): bool
     {
         return $this->status() === 'active';
-    }
-
-    public function databaseCreated(): bool
-    {
-        if ((bool) ($this->data['db_created'] ?? false)) {
-            return true;
-        }
-
-        if (! $this->database) {
-            return false;
-        }
-
-        return $this->databaseExists();
-    }
-
-    private function databaseExists(): bool
-    {
-        $connection = config('schermo.core_connection') ?: config('database.default');
-
-        try {
-            $result = DB::connection($connection)->selectOne(
-                'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?',
-                [$this->database]
-            );
-
-            return $result !== null;
-        } catch (Throwable) {
-            return false;
-        }
     }
 }

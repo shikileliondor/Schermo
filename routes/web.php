@@ -77,8 +77,6 @@ Route::middleware(['auth', 'super-admin'])
         Route::get('/schools/{school}', [SchoolController::class, 'show'])->name('schools.show');
         Route::patch('/schools/{school}/toggle', [SchoolController::class, 'toggleStatus'])->name('schools.toggle');
         Route::delete('/schools/{school}', [SchoolController::class, 'destroy'])->name('schools.destroy');
-        Route::post('/schools/{school}/migrations', [SchoolController::class, 'runMigrations'])->name('schools.migrations');
-        Route::post('/schools/{school}/seeders', [SchoolController::class, 'runSeeders'])->name('schools.seeders');
 
         Route::get('/school-admins', [SchoolAdminController::class, 'index'])->name('school-admins.index');
         Route::get('/school-admins/create', [SchoolAdminController::class, 'create'])->name('school-admins.create');
