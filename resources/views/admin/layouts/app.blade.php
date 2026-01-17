@@ -10,7 +10,7 @@
 <div class="min-h-screen flex">
     <aside class="w-64 bg-white border-r border-slate-200 px-6 py-8">
         <div class="text-xl font-semibold text-slate-900">Schermo Admin</div>
-        <p class="text-sm text-slate-500 mt-1">Supervision multi-tenant</p>
+        <p class="text-sm text-slate-500 mt-1">Supervision des établissements</p>
 
         <nav class="mt-8 space-y-2">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100' }}">

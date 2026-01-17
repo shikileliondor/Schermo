@@ -21,7 +21,6 @@
                 <th class="px-4 py-3">École</th>
                 <th class="px-4 py-3">Contact</th>
                 <th class="px-4 py-3">Statut</th>
-                <th class="px-4 py-3">Base</th>
                 <th class="px-4 py-3">Actions</th>
             </tr>
             </thead>
@@ -43,11 +42,6 @@
                         </span>
                     </td>
                     <td class="px-4 py-3">
-                        <span class="text-xs font-semibold {{ $school->databaseCreated() ? 'text-emerald-600' : 'text-rose-600' }}">
-                            {{ $school->databaseCreated() ? 'Créée ✔️' : 'Non créée ❌' }}
-                        </span>
-                    </td>
-                    <td class="px-4 py-3">
                         <div class="flex flex-wrap gap-2">
                             <a href="{{ route('admin.schools.show', $school) }}" class="text-xs font-semibold text-slate-700">Détails</a>
                             <form method="POST" action="{{ route('admin.schools.toggle', $school) }}">
@@ -65,7 +59,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="px-4 py-6 text-center text-sm text-slate-500">Aucune école enregistrée.</td>
+                    <td colspan="4" class="px-4 py-6 text-center text-sm text-slate-500">Aucune école enregistrée.</td>
                 </tr>
             @endforelse
             </tbody>

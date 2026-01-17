@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\School;
-use App\Services\SchoolProvisioningService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 
 class SchoolController extends Controller
@@ -38,7 +36,7 @@ class SchoolController extends Controller
         return view('admin.schools.index', [
             'schools' => $schools,
             'pageTitle' => 'Écoles',
-            'pageDescription' => 'Gérez les tenants et leurs accès.',
+            'pageDescription' => 'Gérez les établissements et leurs accès.',
         ]);
     }
 
@@ -46,11 +44,11 @@ class SchoolController extends Controller
     {
         return view('admin.schools.create', [
             'pageTitle' => 'Créer une école',
-            'pageDescription' => 'Ajoutez un nouveau tenant à la plateforme.',
+            'pageDescription' => 'Ajoutez un nouvel établissement à la plateforme.',
         ]);
     }
 
-    public function store(Request $request, SchoolProvisioningService $provisioningService): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $payload = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -60,7 +58,15 @@ class SchoolController extends Controller
             'status' => ['required', 'in:active,suspended'],
         ]);
 
-        $school = $provisioningService->createSchool($payload);
+        $school = School::create([
+            'name' => $payload['name'],
+            'status' => $payload['status'] === 'active',
+            'data' => [
+                'code' => $payload['code'],
+                'email' => $payload['email'],
+                'phone' => $payload['phone'],
+            ],
+        ]);
 
         Log::info('School created', [
             'school_id' => $school->id,
@@ -75,13 +81,10 @@ class SchoolController extends Controller
 
     public function show(School $school)
     {
-        $connection = config('database.connections.'.(config('schermo.core_connection') ?: config('database.default')));
-
         return view('admin.schools.show', [
             'school' => $school,
-            'connection' => $connection,
             'pageTitle' => $school->name,
-            'pageDescription' => 'Détails techniques et actions rapides.',
+            'pageDescription' => 'Aperçu des informations de l’établissement.',
         ]);
     }
 
@@ -109,35 +112,5 @@ class SchoolController extends Controller
         ]);
 
         return redirect()->route('admin.schools.index')->with('success', "L'école a été supprimée.");
-    }
-
-    public function runMigrations(School $school): RedirectResponse
-    {
-        Artisan::call('tenants:migrate', [
-            '--tenants' => [$school->id],
-            '--force' => true,
-        ]);
-
-        Log::info('Tenant migrations executed', [
-            'school_id' => $school->id,
-            'action' => 'migrate',
-        ]);
-
-        return back()->with('success', 'Migrations exécutées avec succès.');
-    }
-
-    public function runSeeders(School $school): RedirectResponse
-    {
-        Artisan::call('tenants:seed', [
-            '--tenants' => [$school->id],
-            '--force' => true,
-        ]);
-
-        Log::info('Tenant seeders executed', [
-            'school_id' => $school->id,
-            'action' => 'seed',
-        ]);
-
-        return back()->with('success', 'Seeders relancés avec succès.');
     }
 }

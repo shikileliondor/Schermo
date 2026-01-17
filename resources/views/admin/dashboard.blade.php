@@ -36,7 +36,7 @@
             <h2 class="text-base font-semibold">Suivi technique</h2>
             <ul class="mt-4 space-y-3 text-sm text-slate-600">
                 <li>✅ Super Admin unique avec accès global.</li>
-                <li>✅ Tenants gérés via stancl/tenancy.</li>
+                <li>✅ Accès des écoles administré depuis un espace central.</li>
                 <li>✅ Actions critiques journalisées.</li>
             </ul>
         </div>
